@@ -27,9 +27,13 @@ function Find-Gh {
 
 $git = Find-Git
 $gh = Find-Gh
+$gitDir = Split-Path $git -Parent
+$env:Path = "$gitDir;$env:Path"
 
 Write-Host "Using Git: $git"
 Write-Host "Using GitHub CLI: $gh"
+
+& $gh auth setup-git 2>$null | Out-Null
 
 & $gh auth status 2>&1 | Out-Host
 if ($LASTEXITCODE -ne 0) {
@@ -62,6 +66,12 @@ $files = @(
 & $git add @files
 $status = & $git status --porcelain
 if ($status) {
+    if (-not $env:GIT_AUTHOR_NAME) {
+        $env:GIT_AUTHOR_NAME = $user
+        $env:GIT_AUTHOR_EMAIL = "$user@users.noreply.github.com"
+        $env:GIT_COMMITTER_NAME = $env:GIT_AUTHOR_NAME
+        $env:GIT_COMMITTER_EMAIL = $env:GIT_AUTHOR_EMAIL
+    }
     & $git commit -m "Deploy Sodagreen lyrics search site for GitHub Pages"
 } else {
     Write-Host "No changes to commit."
@@ -83,15 +93,14 @@ try {
 
 if (-not $repoExists) {
     Write-Host "Creating public repository $user/$repoName ..."
-    & $gh repo create $repoName --public --source=. --remote=origin --description "Sodagreen lyrics search (GitHub Pages)"
-} else {
-    Write-Host "Repository already exists, pushing ..."
-    & $git push -u origin main
+    & $gh repo create $repoName --public --description "Sodagreen lyrics search (GitHub Pages)" 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Repository may already exist, continuing ..."
+    }
 }
 
-if ($LASTEXITCODE -ne 0) {
-    & $git push -u origin main
-}
+Write-Host "Pushing to origin main ..."
+& $git push -u origin main
 
 Write-Host "Enabling GitHub Pages (branch main, root) ..."
 & $gh api --method POST "/repos/$user/$repoName/pages" `

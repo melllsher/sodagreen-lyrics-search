@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>苏打绿 · 歌词搜索</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,13 +26,13 @@
           <input
             type="search"
             id="searchInput"
-            placeholder="输入关键字，例如：夏、美丽、烦恼…"
+            placeholder="输入字或词，例如：夏、美丽、走过…"
             autocomplete="off"
-            maxlength="3"
+            enterkeyhint="search"
           >
           <button type="submit" id="searchBtn">搜索</button>
         </div>
-        <p class="search-hint">关键字最多 3 个汉字（或等长字符）</p>
+        <p class="search-hint">支持单字或多字词组，在歌词中模糊匹配</p>
       </form>
     </div>
   </header>

@@ -85,16 +85,28 @@ const SongsDB = (() => {
       return songs.length;
     },
 
-    /** 在歌词中搜索关键字 */
+    /** 在歌词（及歌名）中搜索关键字，支持单字与多字词组 */
     search(keyword) {
       if (!keyword) return [];
       const lowerKeyword = keyword.toLowerCase();
+      const matchesText = (text) =>
+        text.includes(keyword) || text.toLowerCase().includes(lowerKeyword);
+
       return songs
-        .filter((song) => song.lyrics.includes(keyword) || song.lyrics.toLowerCase().includes(lowerKeyword))
-        .map((song) => ({
-          song,
-          snippet: extractSnippet(song.lyrics, keyword),
-        }));
+        .filter(
+          (song) =>
+            matchesText(song.lyrics) ||
+            matchesText(song.title) ||
+            (song.album && matchesText(song.album))
+        )
+        .map((song) => {
+          let snippet = extractSnippet(song.lyrics, keyword);
+          if (snippet.length === 0) {
+            const lines = song.lyrics.split("\n").filter((l) => l.trim());
+            snippet = lines.slice(0, 3);
+          }
+          return { song, snippet };
+        });
     },
   };
 })();
@@ -106,22 +118,11 @@ window.SongsDB = SongsDB;
 //  搜索工具函数
 // ============================================================
 
-/** 三个汉字对应的 UTF-8 字节上限 */
-const MAX_KEYWORD_BYTES = 9;
-
-/** 计算字符串 UTF-8 字节长度 */
-function getByteLength(str) {
-  return new TextEncoder().encode(str).length;
-}
-
-/** 校验关键字长度 */
+/** 校验关键字 */
 function validateKeyword(keyword) {
   const trimmed = keyword.trim();
   if (!trimmed) {
     return { valid: false, message: "请输入搜索关键字" };
-  }
-  if (getByteLength(trimmed) > MAX_KEYWORD_BYTES) {
-    return { valid: false, message: "关键字最多 3 个汉字（或等长字符）" };
   }
   return { valid: true, keyword: trimmed };
 }
@@ -291,15 +292,6 @@ document.querySelectorAll(".keyword-chip").forEach((chip) => {
     searchInput.value = keyword;
     performSearch(keyword);
   });
-});
-
-// 输入时限制字节长度
-searchInput.addEventListener("input", () => {
-  let val = searchInput.value;
-  while (getByteLength(val) > MAX_KEYWORD_BYTES) {
-    val = [...val].slice(0, -1).join("");
-  }
-  searchInput.value = val;
 });
 
 // 初始化
