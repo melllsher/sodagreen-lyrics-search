@@ -155,6 +155,15 @@ function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/** 编码封面路径，避免中文/空格在移动端请求失败 */
+function encodeCoverPath(path) {
+  if (!path) return "";
+  return path
+    .split("/")
+    .map((segment, index) => (index === 0 ? segment : encodeURIComponent(segment)))
+    .join("/");
+}
+
 /**
  * 提取匹配歌词片段（最多 3 行）
  * 优先返回包含关键字的行；若不足 3 行，补充相邻行
@@ -196,7 +205,8 @@ function extractSnippet(lyrics, keyword) {
 function renderCover(song) {
   const [c1, c2] = song.coverColor || ["#2d6a4f", "#52b788"];
   if (song.cover) {
-    return `<img src="${escapeHtml(song.cover)}" alt="${escapeHtml(song.album)} 封面">`;
+    const src = encodeCoverPath(song.cover);
+    return `<img src="${src}" alt="${escapeHtml(song.album)} 封面" loading="lazy" decoding="async">`;
   }
   return `
     <div class="card-cover-placeholder" style="background: linear-gradient(145deg, ${c1}, ${c2});">
