@@ -85,7 +85,7 @@ const SongsDB = (() => {
       return songs.length;
     },
 
-    /** 在歌词（及歌名）中搜索关键字，支持单字与多字词组 */
+    /** 在歌词或歌名中搜索关键字，支持单字与多字词组 */
     search(keyword) {
       if (!keyword) return [];
       const lowerKeyword = keyword.toLowerCase();
@@ -94,10 +94,7 @@ const SongsDB = (() => {
 
       return songs
         .filter(
-          (song) =>
-            matchesText(song.lyrics) ||
-            matchesText(song.title) ||
-            (song.album && matchesText(song.album))
+          (song) => matchesText(song.lyrics) || matchesText(song.title)
         )
         .map((song) => {
           let snippet = extractSnippet(song.lyrics, keyword);
