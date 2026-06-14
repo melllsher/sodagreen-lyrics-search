@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>苏打绿 · 歌词搜索</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">♪</span>
+        <div>
+          <h1>苏打绿 · 歌词搜索</h1>
+          <p class="tagline">在文字里，找到属于夏天的那一行</p>
+        </div>
+      </div>
+
+      <form class="search-form" id="searchForm" role="search">
+        <label for="searchInput" class="visually-hidden">搜索歌词关键字</label>
+        <div class="search-box">
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="输入关键字，例如：夏、美丽、烦恼…"
+            autocomplete="off"
+            maxlength="3"
+          >
+          <button type="submit" id="searchBtn">搜索</button>
+        </div>
+        <p class="search-hint">关键字最多 3 个汉字（或等长字符）</p>
+      </form>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="stats-bar" id="statsBar" aria-live="polite"></section>
+
+    <section class="results" id="results" aria-live="polite">
+      <div class="welcome" id="welcome">
+        <div class="welcome-card">
+          <h2>欢迎来到苏打绿歌词库</h2>
+          <p>输入歌词中的任意关键字，我们会为你找出所有匹配的歌曲，并高亮显示相关段落。</p>
+          <ul class="sample-keywords">
+            <li><button type="button" class="keyword-chip" data-keyword="夏">夏</button></li>
+            <li><button type="button" class="keyword-chip" data-keyword="美丽">美丽</button></li>
+            <li><button type="button" class="keyword-chip" data-keyword="烦恼">烦恼</button></li>
+            <li><button type="button" class="keyword-chip" data-keyword="走过">走过</button></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>数据仅供学习交流 · 苏打绿 Sodagreen</p>
+  </footer>
+
+  <script src="songs-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
