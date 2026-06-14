@@ -8,6 +8,8 @@ Set-Location $ProjectRoot
 function Find-Git {
     $cmd = Get-Command git -ErrorAction SilentlyContinue
     if ($cmd) { return $cmd.Source }
+    $portable = Join-Path $ProjectRoot ".tools\mingit\cmd\git.exe"
+    if (Test-Path $portable) { return $portable }
     $default = "C:\Program Files\Git\bin\git.exe"
     if (Test-Path $default) { return $default }
     throw "Git not found. Install: winget install Git.Git -e"
@@ -16,6 +18,8 @@ function Find-Git {
 function Find-Gh {
     $cmd = Get-Command gh -ErrorAction SilentlyContinue
     if ($cmd) { return $cmd.Source }
+    $portable = Join-Path $ProjectRoot ".tools\gh\bin\gh.exe"
+    if (Test-Path $portable) { return $portable }
     $default = "C:\Program Files\GitHub CLI\gh.exe"
     if (Test-Path $default) { return $default }
     throw "GitHub CLI not found. Install: winget install GitHub.cli -e"
